@@ -1,9 +1,7 @@
 {{ 'announcement-bar.css' | asset_url | stylesheet_tag }}
 
 {% comment %} Annound Bar Section {% endcomment %}
-<section 
-class="announcement-bar section-{{ section.id }}" 
-style="
+<section class="announcement-bar section-{{ section.id }}" style="
   --ab-bg: {{ section.settings.bg_color }};
   --ab-text: {{ section.settings.text_color }};
   --ab-link: {{ section.settings.link_color }};
@@ -15,22 +13,21 @@ style="
   --ab-radius: {{ section.settings.border_radius }}px;
   --ab-bar-max-width: {{ section.settings.bar_max_width }}px;
 ">
-  <div 
-  class="announcement-bar__inner {% if section.settings.bar_full_width %}announcement-bar__inner--full {% else %}announcement-bar__inner--contained{% endif %}"
-  role="region"
-  aria-label="Announcement"
-  >
-  {% if section.settings.text != blank %}
-    {% if section.settings.link != blank %}
-      <a class="announcement-bar__link" href="{{ section.settings.link }}">
-        {{ section.settings.text | escape }}
-      </a>
-    {% else %}
-      <p class="announcement-bar__text">
-        {{ section.settings.text | escape }}
-      </p>
+  <div
+    class="announcement-bar__inner {% if section.settings.bar_full_width %}announcement-bar__inner--full {% else %}announcement-bar__inner--contained{% endif %}"
+    role="region"
+    aria-label="Announcement">
+    {% if section.settings.text != blank %}
+      {% if section.settings.link != blank %}
+        <a class="announcement-bar__link" href="{{ section.settings.link }}">
+          {{ section.settings.text | escape }}
+        </a>
+      {% else %}
+        <p class="announcement-bar__text">
+          {{ section.settings.text | escape }}
+        </p>
+      {% endif %}
     {% endif %}
-  {% endif %}
   </div>
 </section>
 
@@ -55,11 +52,10 @@ style="
       },
       {
         "type": "checkbox",
-        "id":"bar_full_width",
-        "label": "Full widgh background",
+        "id": "bar_full_width",
+        "label": "Full width background",
         "default": true
-      },
-      {
+      }, {
         "type": "range",
         "id": "bar_max_width",
         "label": "Background max width (px) when not full width",
@@ -67,12 +63,10 @@ style="
         "max": 1600,
         "step": 20,
         "default": 1200
-      },
-      {
+      }, {
         "type": "header",
         "content": "Colors"
-      },
-      {
+      }, {
         "type": "color",
         "id": "bg_color",
         "label": "Background color",
