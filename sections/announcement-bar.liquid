@@ -1,25 +1,36 @@
 {{ 'announcement-bar.css' | asset_url | stylesheet_tag }}
 
 {% comment %} Annound Bar Section {% endcomment %}
-<section class="announcement-bar" style="
+<section 
+class="announcement-bar section-{{ section.id }}" 
+style="
   --ab-bg: {{ section.settings.bg_color }};
   --ab-text: {{ section.settings.text_color }};
   --ab-link: {{ section.settings.link_color }};
   --ab-font-size: {{ section.settings.font_size }}px;
   --ab-font-weight: {{ section.settings.font_weight }};
-  --ab-align: {{ section.settings.text_align }};  
-  --ab-max-width: {% if section.settings.full_width %}none{% else %}{{ section.settings.max_width }}px{% endif %};
-  --ab-pad-y: {{ section.settings.padding_y }}px;
-  --ab-pad-x: {{ section.settings.padding_x }}px;
+  --ab-text-align: {{ section.settings.text_align }};  
+  --ab-padding-y: {{ section.settings.padding_y }}px;
+  --ab-padding-x: {{ section.settings.padding_x }}px;
+  --ab-radius: {{ section.settings.border_radius }}px;
+  --ab-bar-max-width: {{ section.settings.bar_max_width }}px;
 ">
-  <div class="announcement-bar__inner">
+  <div 
+  class="announcement-bar__inner {% if section.settings.bar_full_width %}announcement-bar__inner--full {% else %}announcement-bar__inner--contained{% endif %}"
+  role="region"
+  aria-label="Announcement"
+  >
+  {% if section.settings.text != blank %}
     {% if section.settings.link != blank %}
       <a class="announcement-bar__link" href="{{ section.settings.link }}">
         {{ section.settings.text | escape }}
       </a>
     {% else %}
-      <p class="announcement-bar__text">{{ section.settings.text | escape }}</p>
+      <p class="announcement-bar__text">
+        {{ section.settings.text | escape }}
+      </p>
     {% endif %}
+  {% endif %}
   </div>
 </section>
 
@@ -40,13 +51,32 @@
       },
       {
         "type": "header",
+        "content": "Bar width (background)"
+      },
+      {
+        "type": "checkbox",
+        "id":"bar_full_width",
+        "label": "Full widgh background",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "bar_max_width",
+        "label": "Background max width (px) when not full width",
+        "min": 320,
+        "max": 1600,
+        "step": 20,
+        "default": 1200
+      },
+      {
+        "type": "header",
         "content": "Colors"
       },
       {
         "type": "color",
         "id": "bg_color",
         "label": "Background color",
-        "default": "#fffae6"
+        "default": "#C5B7F1"
       }, {
         "type": "color",
         "id": "text_color",
@@ -104,20 +134,7 @@
         ]
       }, {
         "type": "header",
-        "content": "Layout"
-      }, {
-        "type": "checkbox",
-        "id": "full_width",
-        "label": "Full width content (no max width)",
-        "default": false
-      }, {
-        "type": "range",
-        "id": "max_width",
-        "label": "Content max width (px)",
-        "min": 320,
-        "max": 1600,
-        "step": 20,
-        "default": 1200
+        "content": "Spacing & shape"
       }, {
         "type": "range",
         "id": "padding_y",
@@ -125,7 +142,7 @@
         "min": 4,
         "max": 30,
         "step": 1,
-        "default": 8
+        "default": 10
       }, {
         "type": "range",
         "id": "padding_x",
@@ -134,6 +151,14 @@
         "max": 50,
         "step": 1,
         "default": 16
+      }, {
+        "type": "range",
+        "id": "border_radius",
+        "label": "Border radius (px)",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "default": 8
       }
     ],
     "presets": [

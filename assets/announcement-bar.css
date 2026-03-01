@@ -1,17 +1,30 @@
+/* Base section wrapper (scoped via CSS variables set inline) */
 .announcement-bar {
-  background: var(--ab-bg);
-  color: var(--ab-text);
   font-size: var(--ab-font-size);
   font-weight: var(--ab-font-weight);
-  padding: var(--ab-pad-y) var(--ab-pad-x);
 }
 
+/* The colored bar (background element) */
 .announcement-bar__inner {
-  max-width: var(--ab-max-width);
-  margin: 0 auto;
-  text-align: var(--ab-align);
+  background: var(--ab-bg);
+  color: var(--ab-text);
+  padding: var(--ab-padding-y) var(--ab-padding-x);
+  border-radius: var(--ab-radius);
+  text-align: var(--ab-text-align);
 }
 
+/* Full width background */
+.announcement-bar__inner--full {
+  width: 100%;
+}
+
+/* Contained background */
+.announcement-bar__inner--contained {
+  max-width: var(--ab-bar-max-width);
+  margin: 0 auto;
+}
+
+/* Text + link */
 .announcement-bar__text {
   margin: 0;
 }
@@ -19,4 +32,10 @@
 .announcement-bar__link {
   color: var(--ab-link);
   text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.announcement-bar__link:hover,
+.announcement-bar__link:focus-visible {
+  text-decoration-thickness: 2px;
 }
