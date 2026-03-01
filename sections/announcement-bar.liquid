@@ -1,3 +1,5 @@
+{{ 'announcement-bar.css' | asset_url | stylesheet_tag }}
+
 {% comment %} Annound Bar Section {% endcomment %}
 <section class="announcement-bar" style="
   --ab-bg: {{ section.settings.bg_color }};
@@ -7,8 +9,8 @@
   --ab-font-weight: {{ section.settings.font_weight }};
   --ab-align: {{ section.settings.text_align }};  
   --ab-max-width: {% if section.settings.full_width %}none{% else %}{{ section.settings.max_width }}px{% endif %};
-  --ab-pad-y: {{ section.settings.pading_y }}px;
-  --ab-pad-x: {{ section.settings.pading_x }}px;
+  --ab-pad-y: {{ section.settings.padding_y }}px;
+  --ab-pad-x: {{ section.settings.padding_x }}px;
 ">
   <div class="announcement-bar__inner">
     {% if section.settings.link != blank %}
@@ -23,13 +25,13 @@
 
 {% schema %}
   {
-    "name": "Announcement Bar",
+    "name": "Custom Announcement Bar",
     "settings": [
       {
         "type": "text",
         "id": "text",
         "label": "Text",
-        "default": "Free shippin on orders over $50!"
+        "default": "Free shipping on orders over $50!"
       },
       {
         "type": "url",
@@ -54,7 +56,7 @@
         "type": "color",
         "id": "link_color",
         "label": "Link color",
-        "defaule": "#111111"
+        "default": "#111111"
       }, {
         "type": "header",
         "content": "Typography"
@@ -136,7 +138,7 @@
     ],
     "presets": [
       {
-        "name": "Announcement Bar"
+        "name": "Custom Announcement Bar"
       }
     ]
   }
