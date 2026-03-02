@@ -1,0 +1,109 @@
+/* Featured Collection (mobile-first)
+   Uses CSS variable set in the section:
+   --fc-columns: 2/3/4 (desktop)
+   --fc-columns-mobile: 1/2 (mobile) 
+*/
+
+.featured-collection {
+  padding: 1.25em 0;
+}
+
+.featured-collection__header {
+  max-width: 1200px;
+  margin: 0 auto 1em;
+  padding: 0 1em;
+}
+
+.featured-collection__heading {
+  margin: 0;
+  font-size: 1.25em;
+}
+
+.featured-collection__empty {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.featured-collection__grid {
+  --fc-columns: 4;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1em;
+  display: grid;
+  gap: 1em;
+  grid-template-columns: repeat(var(--fc-columns), minmax(1, 1fr));
+}
+
+@media (max-width: 990px) {
+  .featured-collection__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.product-card {
+  display: block;
+}
+
+.product-card__link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 4px;
+  outline: none;
+}
+
+.product-card__link:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 3px;
+}
+
+.product-card__media {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.product-card__media img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.product-card__placeholder {
+  width: 100%;
+  padding-top: 100%;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.product-card__badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+}
+
+.product-card__badge--soldout {
+  left: auto;
+  right: 10px;
+}
+
+.product-card__title {
+  margin: 10px 0 6px;
+  font-size: 1em;
+}
+
+.product-card__price {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.product-card__price--compare {
+  margin-left: 8px;
+  text-decoration: line-through;
+  opacity: 0.7;
+}
