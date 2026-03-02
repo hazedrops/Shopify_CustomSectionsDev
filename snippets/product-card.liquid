@@ -1,0 +1,45 @@
+{% comment %} 
+      Usage:
+      {% render 'product-card', product: product %} 
+{% endcomment %}
+
+{% if product %}
+  <article class="product-card">
+    <a
+      href="{{ product.url }}"
+      class="product-card__link"
+      aria-label="{{ product.title | escape }}">
+      <div class="product-card__media">
+        {% if product.featured_image %}
+          {{ product.featured_image 
+ | image_url: width: 800
+ | image_tag:
+ loading: 'lazy',
+ alt: product.featured_image.alt | default: product.title | escape
+          }}
+        {% else %}
+          <div class="product-card__placeholder" aria-hidden="true"></div>
+        {% endif %}
+
+        {% if product.compare_at_price > product.price %}
+          <span class="product-card__badge" aria-label="On sale">Sale</span>
+        {% endif %}
+
+        {% unless product.available %}
+          <span class="product-card__badge product-card__badge--soldot" aria-label="Sold out">Sold out</span>
+        {% endunless %}
+      </div>
+
+      <h3 class="product-card__title">{{ product.title | escape }}</h3>
+
+      <p class="product-card__price">
+        {% if product.compare_at_price > product.price %}
+          <span class="product-card__price--sale">{{ product.price | money }}</span>
+          <span class="product-card__price--compare">{{ product.compare_at_price | money }}</span>
+        {% else %}
+          <span>{{ product.price | money }}</span>
+        {% endif %}
+      </p>
+    </a>
+  </article>
+{% endif %}
