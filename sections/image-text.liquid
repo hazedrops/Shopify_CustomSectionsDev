@@ -1,0 +1,104 @@
+{{ 'image-text.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="image-text section-{{ section.id }}"
+  role="region"
+  aria-label="{{ section.settings.heading | escape }}"
+  style="
+    --it-max-width: {{ section.settings.max_width }}px;
+  ">
+  <div class="image-text__wrap{% if section.settings.full_width %} image-text__wrap--full{% else %} image-text__wrap--contained{% endif %} ">
+    <div class="image-text__grid{% if section.settings.image_position == 'right' %} image-text__grid--reverse{% endif %}">
+      <div class="image-text__media">
+        {% if section.settings.image != blank %}
+          {{ section.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', alt: section.settings.image.alt | default: section.settings.heading | escape
+          }}
+        {% else %}
+          <div class="image-text__placeholder" aria-hidden="true"></div>
+        {% endif %}
+      </div>
+
+      <div class="image-text__content">
+        {% if section.settings.text != blank %}
+          <div class="image-text__text">
+            {{ section.settings.text }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.button_label != blank and section.settings.button_linke != blank %}
+          {{ section.settings.button_label | escape }}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Image + Text",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image"
+      },
+      {
+        "type": "select",
+        "id": "image_position",
+        "label": "Image position",
+        "default": "left",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          }, {
+            "value": "right",
+            "label": "Right"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "defalt": "Image with text"
+      },
+      {
+        "type": "richtext",
+        "id": "text",
+        "label": "Text",
+        "default": "<p>Add a short description here.</p>"
+      }, {
+        "type": "text",
+        "id": "button_label",
+        "label": "Button label",
+        "default": "Shop now"
+      }, {
+        "type": "url",
+        "id": "button_link",
+        "label": "Button link"
+      }, {
+        "type": "header",
+        "content": "Section width"
+      }, {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Full width section",
+        "default": false
+      }, {
+        "type": "range",
+        "id": "max_width",
+        "label": "Content max width (px) when nto full width",
+        "min": 320,
+        "max": 1600,
+        "step": 20,
+        "default": 1200
+      }
+    ],
+    "presets": [
+      {
+        "name": "Image + Text"
+      }
+    ]
+  }
+{% endschema %}
