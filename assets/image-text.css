@@ -8,6 +8,7 @@
 .image-text--contained {
   max-width: var(--it-section-max-width, 1400px);
   margin: 0 auto;
+  border: 2px solid red;
 }
 
 .image-text__wrap {
@@ -49,9 +50,7 @@
 }
 
 .image-text__media-image, 
-.image-text__media-video, 
-.image-text__external-video iframe, 
-.image-text__external-video video {
+.image-text__media-video {
   display: block;
   width: 100%;
   aspect-ratio: 4 / 3;
@@ -65,6 +64,24 @@
 
 .image-text__external-video {
   width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.image-text__external-video > * {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+
+.image-text__external-video iframe {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border: 0;
 }
 
 .image-text__placeholder {

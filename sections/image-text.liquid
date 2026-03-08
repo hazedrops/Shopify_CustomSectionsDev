@@ -23,11 +23,11 @@
             {% if section.settings.image != blank %}
               {% assign media_alt = section.settings.image.alt | default: section_label | escape %}
               {{ section.settings.image 
-                | image_url: width: 1600 
-                | image_tag: 
-                  loading: 'lazy', 
-                  alt: media_alt,
-                  class: 'image-text__media-image'
+ | image_url: width: 1600 
+ | image_tag: 
+ loading: 'lazy', 
+ alt: media_alt,
+ class: 'image-text__media-image'
               }}
             {% else %}
               <div class="image-text__placeholder" aria-hidden="true"></div>
@@ -54,14 +54,28 @@
 
           {% when 'external_video' %}
             {% if section.settings.external_video != blank %}
+              {% assign external_video = section.settings.external_video %}
+
               <div class="image-text__external-video">
-                {{ section.settings.external_video 
- | external_video_url: 
- autoplay: section.settings.video_autoplay,
- loop: section.settings.video_autoplay
- | external_video_tag
-                }}
+                {% if external_video.type == 'youtube' %}
+                  <iframe
+                    src="https://www.youtube.com/embed/{{ external_video.id }}?playsinline=1{% if section.settings.video_autoplay %}&autoplay=1&mute=1&loop=1&playlist={{ external_video.id }}{% endif %}"
+                    title="{{ section_label | escape }}"
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                    loading="lazy"
+                    frameborder="0"></iframe>
+                {% elsif external_video.type == 'vimeo' %}
+                  <iframe
+                    src="https://player.vimeo.com/video/{{ external_video.id }}{% if section.settings.video_autoplay %}?autoplay=1&muted=1&loop=1{% endif %}"
+                    title="{{ section_label | escape }}"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowfullscreen
+                    loading="lazy"
+                    frameborder="0"></iframe>
+                {% endif %}
               </div>
+
               {% if section.settings.video_description != blank %}
                 <p class="image-text__video-description">
                   {{ section.settings.video_description | escape }}
@@ -169,8 +183,7 @@
       }, {
         "type": "header",
         "content": "Layout"
-      }, 
-      {
+      }, {
         "type": "select",
         "id": "media_position",
         "label": "Media position",
