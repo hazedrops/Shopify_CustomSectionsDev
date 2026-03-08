@@ -1,0 +1,37 @@
+{{ 'product-tabs.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'procuct-tabs.js' | asset_url }}" defer="defer"></script>
+
+{% assign first_tab_id = sections.blocks.first.id %}
+
+<section
+  id="shopify-section-{{ section.id }}"
+  class="product-tabs-section section-{{ section.id }}"
+  role="region"
+  aria-label="{{ section.settings.heading | escape | default: 'Product tabs' }}"  
+>
+  <div class="product-tabs page-width">
+    {%- if section.settings.heading != blank -%}
+      <div class="product-tabs__header">
+        <h2 class="product-tabs__heading">
+          {{ section.settings.heading }}
+        </h2>
+      </div>
+    {%- endif -%}
+
+    {%- if section.blocks != blank -%}
+      <div 
+      class="product-tabs--nav"
+      role="tablist"
+      aria-label="{{ section.settings.heading | escape | default: 'Product information' }}"
+      data-product-tabs-nav
+      >
+        {% for block in section.blocks %}
+          {% assign tab_title = block.settings.heading | default: 'Tab' %}
+          
+        {% endfor %}
+
+      </div>
+    {%- endif -%}
+  </div>
+
+</section>

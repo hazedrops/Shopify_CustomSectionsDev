@@ -1,35 +1,35 @@
 {{ 'featured-collection.css' | asset_url | stylesheet_tag }}
 
-{% assign collection = section.settings.collection %}
+{%- assign collection = section.settings.collection -%}
 
 <section
   class="featured-collection section-{{ section.id }}"
   role="region"
   aria-label="{{ section.settings.heading | escape }}">
   <div class="featured-collection__header">
-    {% if section.settings.heading != blank %}
+    {%- if section.settings.heading != blank -%}
       <h2 class="featured-collection__heading">{{ section.settings.heading | escape }}</h2>
-    {% endif %}
+    {%- endif -%}
   </div>
-  {% if collection == blank %}
+  {%- if collection == blank -%}
     <p class="featured-collection__empty">
       Select a collection in the Theme Editor to display products.
     </p>
-  {% else %}
+  {%- else -%}
     <div class="featured-collection__grid" style="
       --fc-columns: {{ section.settings.columns }};
       --fc-columns-mobile: {{ section.settings.columns_mobile }};
       --card-ratio: {{ section.settings.image_ratio }};
     ">
-      {% for product in collection.products limit: section.settings.products_to_show %}
-        {% render 'product-card'
-          , product: product %}
-      {% endfor %}
+      {%- for product in collection.products limit: section.settings.products_to_show -%}
+        {%- render 'product-card'
+          , product: product -%}
+      {%- endfor -%}
     </div>
-  {% endif %}
+  {%- endif -%}
 </section>
 
-{% schema %}
+{%- schema -%}
   {
     "name": "Featured Collection Grid",
     "settings": [
@@ -109,4 +109,4 @@
       }
     ]
   }
-{% endschema %}
+{%- endschema -%}

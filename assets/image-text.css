@@ -6,7 +6,7 @@
 
 /* contained layout */
 .image-text--contained {
-  max-width: 1200px
+  max-width: 1200px;
   margin: 0 auto;
   border: 2px solid red;
 }
