@@ -8,12 +8,12 @@
   role="region"
   aria-label="{{ section_label | escape }}"
   style="
-    --it-section-max-width: {{ section.settings.section_max_width }}px;
     --it-bg: {{ section.settings.background_color }};
     --it-text-align: {{ section.settings.text_alignment }};
     --it-padding-top: {{ section.settings.padding_top }}px;
     --it-padding-bottom: {{ section.settings.padding_bottom }}px;
     --it-media-fit: {{ section.settings.media_fit }};
+    --it-desktop-columns: {{ section.settings.desktop_layout }};
   ">
   <div class="image-text__wrap">
     <div class="image-text__grid{% if section.settings.media_position == 'right' %} image-text__grid--reverse{% endif %}">
@@ -220,13 +220,15 @@
         "label": "Full width section",
         "default": false
       }, {
-        "type": "range",
-        "id": "section_max_width",
-        "label": "Section max width",
-        "min": 600,
-        "max": 2000,
-        "step": 20,
-        "default": 1400
+        "type": "select",
+        "id": "desktop_layout",
+        "label": "Media / text width ratio (Desktop)",
+        "default": "1fr 1fr",
+        "options": [
+          { "value": "1fr 1fr", "label": "Media 5 / Text 5" },
+          { "value": "3fr 2fr", "label": "Media 6 / Text 4" },
+          { "value": "2fr 3fr", "label": "Media 4 / Text 6" }
+        ]
       }, {
         "type": "color",
         "id": "background_color",

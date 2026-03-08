@@ -6,7 +6,7 @@
 
 /* contained layout */
 .image-text--contained {
-  max-width: var(--it-section-max-width, 1400px);
+  max-width: 1200px
   margin: 0 auto;
   border: 2px solid red;
 }
@@ -27,7 +27,7 @@
 
 @media (min-width: 990px) {
   .image-text__grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: var(--it-desktop-columns, 1fr 1fr);
     gap: 2em;
   }
 
