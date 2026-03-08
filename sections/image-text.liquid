@@ -12,6 +12,7 @@
     --it-text-align: {{ section.settings.text_alignment }};
     --it-padding-top: {{ section.settings.padding_top }}px;
     --it-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --it-padding-inline: {{ section.settings.padding_inline }}px;
     --it-media-fit: {{ section.settings.media_fit }};
     --it-desktop-columns: {{ section.settings.desktop_layout }};
   ">
@@ -222,7 +223,7 @@
       }, {
         "type": "select",
         "id": "desktop_layout",
-        "label": "Media / text width ratio (Desktop)",
+        "label": "Media / Text width ratio (Desktop)",
         "default": "1fr 1fr",
         "options": [
           { "value": "1fr 1fr", "label": "Media 5 / Text 5" },
@@ -253,6 +254,14 @@
         "max": 120,
         "step": 4,
         "default": 40
+      }, {
+        "type": "range",
+        "id": "padding_inline",
+        "label": "Left and right padding",
+        "min": 0,
+        "max": 60,
+        "step": 4,
+        "default": 16
       }
     ],
     "blocks": [

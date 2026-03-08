@@ -12,7 +12,8 @@
 }
 
 .image-text__wrap {
-  padding: 0 1em;
+  padding-left: var(--it-padding-inline, 1em);
+  padding-right: var(--it-padding-inline, 1em);
 }
 
 /* Layout */
