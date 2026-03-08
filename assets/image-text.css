@@ -4,14 +4,13 @@
   padding-bottom: var(--it-padding-bottom);
 }
 
-/* Width control */
-.image-text__wrap--full {
-  width: 100%;
+/* contained layout */
+.image-text--contained {
+  max-width: var(--it-section-max-width, 1400px);
+  margin: 0 auto;
 }
 
-.image-text__wrap--contained {
-  max-width: var(--it-max-width, 1200px);
-  margin: 0 auto;
+.image-text__wrap {
   padding: 0 1em;
 }
 

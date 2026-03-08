@@ -4,18 +4,18 @@
 {% assign section_label = heading_block.settings.heading | default: 'Media with text' %}
 
 <section
-  class="image-text section-{{ section.id }}"
+  class="image-text section-{{ section.id }}{% unless section.settings.full_width %} image-text--contained{% endunless %}"
   role="region"
   aria-label="{{ section_label | escape }}"
   style="
-    --it-max-width: {{ section.settings.max_width }}px;
+    --it-section-max-width: {{ section.settings.section_max_width }}px;
     --it-bg: {{ section.settings.background_color }};
     --it-text-align: {{ section.settings.text_alignment }};
     --it-padding-top: {{ section.settings.padding_top }}px;
     --it-padding-bottom: {{ section.settings.padding_bottom }}px;
     --it-media-fit: {{ section.settings.media_fit }};
   ">
-  <div class="image-text__wrap{% if section.settings.full_width %} image-text__wrap--full{% else %} image-text__wrap--contained{% endif %} ">
+  <div class="image-text__wrap">
     <div class="image-text__grid{% if section.settings.media_position == 'right' %} image-text__grid--reverse{% endif %}">
       <div class="image-text__media">
         {% case section.settings.media_type %}
@@ -212,12 +212,12 @@
         "default": false
       }, {
         "type": "range",
-        "id": "max_width",
-        "label": "Content max width (px) when nto full width",
-        "min": 320,
-        "max": 1600,
+        "id": "section_max_width",
+        "label": "Section max width",
+        "min": 600,
+        "max": 2000,
         "step": 20,
-        "default": 1200
+        "default": 1400
       }, {
         "type": "header",
         "content": "Spacing"
