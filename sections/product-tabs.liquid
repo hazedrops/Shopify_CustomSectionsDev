@@ -1,37 +1,171 @@
 {{ 'product-tabs.css' | asset_url | stylesheet_tag }}
-<script src="{{ 'procuct-tabs.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'product-tabs.js' | asset_url }}" defer="defer"></script>
 
-{% assign first_tab_id = sections.blocks.first.id %}
+{% if product %}
 
-<section
-  id="shopify-section-{{ section.id }}"
-  class="product-tabs-section section-{{ section.id }}"
-  role="region"
-  aria-label="{{ section.settings.heading | escape | default: 'Product tabs' }}"  
->
-  <div class="product-tabs page-width">
-    {%- if section.settings.heading != blank -%}
-      <div class="product-tabs__header">
-        <h2 class="product-tabs__heading">
-          {{ section.settings.heading }}
-        </h2>
-      </div>
-    {%- endif -%}
+  <section
+    id="shopify-section-{{ section.id }}"
+    class="product-tabs-section section-{{ section.id }}"
+    role="region"
+    aria-label="{{ section.settings.heading | escape | default: 'Product tabs' }}">
+    <div class="product-tabs page-width">
+      {%- if section.settings.heading != blank -%}
+        <div class="product-tabs__header">
+          <h2 class="product-tabs__heading">
+            {{ section.settings.heading }}
+          </h2>
+        </div>
+      {%- endif -%}
 
-    {%- if section.blocks != blank -%}
-      <div 
-      class="product-tabs--nav"
-      role="tablist"
-      aria-label="{{ section.settings.heading | escape | default: 'Product information' }}"
-      data-product-tabs-nav
-      >
-        {% for block in section.blocks %}
-          {% assign tab_title = block.settings.heading | default: 'Tab' %}
-          
-        {% endfor %}
+      {%- if section.blocks.size > 0 -%}
+        <div
+          class="product-tabs__nav"
+          role="tablist"
+          aria-label="{{ section.settings.heading | escape | default: 'Product information' }}"
+          data-product-tabs-nav>
+          {%- for block in section.blocks -%}
+            {%- assign tab_title = block.settings.heading | default: 'Tab' -%}
+            {%- assign panel_id = 'ProductTabsPanel-' | append: section.id | append: '-' | append: block.id -%}
+            {%- assign tab_id = 'ProductTabsTab-' | append: section.id | append: '-' | append: block.id -%}
 
-      </div>
-    {%- endif -%}
-  </div>
+            <button
+              type="button"
+              id="{{ tab_id }}"
+              class="product-tabs__button{% if forloop.first %} is-active{% endif %}"
+              role="tab"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              aria-controls="{{ panel_id }}"
+              data-tab-button
+              data-tab-target="{{ panel_id }}"
+              {{ block.shopify_attributes }}>
+              {{ tab_title }}
+            </button>
+          {%- endfor -%}
+        </div>
 
-</section>
+        <div class="product-tabs__panels" data-product-tabs-panels>
+          {%- for block in section.blocks -%}
+            {%- assign tab_title = block.settings.heading | default: 'Tab' -%}
+            {%- assign panel_id = 'ProductTabsPanel-' | append: section.id | append: '-' | append: block.id -%}
+            {%- assign tab_id = 'ProductTabsTab-' | append: section.id | append: '-' | append: block.id -%}
+
+            <div
+              id="{{ panel_id }}"
+              class="product-tabs__panel{% if forloop.first %} is-active{% endif %}"
+              role="tabpanel"
+              aria-labelledby="{{ tab_id }}"
+              {% unless forloop.first %}
+              hidden{% endunless %}
+              data-tab-panel>
+              <div class="product-tabs__panel-inner rte">
+                {%- case block.settings.content_source -%}
+                  {%- when 'description' -%}
+                    {{ product.description }}
+
+                  {%- when 'page' -%}
+                    {%- if block.settings.page != blank -%}
+                      {{ block.settings.page.content }}
+                    {%- endif -%}
+
+                  {% else %}
+                    {{ block.settings.content }}
+                {%- endcase -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+      {% else %}
+        <div class="product-tabs__empty">
+          <p>Add tab blocks to show product information.</p>
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+
+{% endif %}
+
+{%- schema -%}
+  {
+    "name": "Product tabs",
+    "tag": "section",
+    "class": "section",
+    "settings": [
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Section heading",
+        "default": "Product information"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "tab",
+        "name": "Tab",
+        "settings": [
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Tab label",
+            "default": "Description"
+          }, {
+            "type": "select",
+            "id": "content_source",
+            "label": "Content source",
+            "options": [
+              {
+                "value": "description",
+                "label": "Product description"
+              }, {
+                "value": "content",
+                "label": "Custom content"
+              }, {
+                "value": "page",
+                "label": "Page"
+              }
+            ],
+            "default": "content"
+          }, {
+            "type": "richtext",
+            "id": "content",
+            "label": "Custom content",
+            "default": "<p>Add tab content here.</p>"
+          }, {
+            "type": "page",
+            "id": "page",
+            "label": "Page"
+          }
+        ]
+      }
+    ],
+    "max_blocks": 6,
+    "presets": [
+      {
+        "name": "product tabs",
+        "blocks": [
+          {
+            "type": "tab",
+            "settings": {
+              "heading": "Description",
+              "content_source": "description"
+            }
+          }, {
+            "type": "tab",
+            "settings": {
+              "heading": "Shipping",
+              "content_source": "content",
+              "content": "<p>Share shipping information here.</p>"
+            }
+          }, {
+            "type": "tab",
+            "settings": {
+              "heading": "Warranty",
+              "content_source": "content",
+              "content": "<p>Share warranty information here.</p>"
+            }
+          }
+        ]
+      }
+    ]
+  }
+{%- endschema -%}
