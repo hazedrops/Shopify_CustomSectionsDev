@@ -1,7 +1,9 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const sections = document.querySelectorAll(".product-tabs-section")
+function initProductTabs(container) {
+  const sections = container.querySelectorAll(".product-tabs-section")
 
   sections.forEach((section) => {
+    if (section.dataset.productTabsInitialized == "true") return
+
     const buttons = section.querySelectorAll("[data-tab-button]")
     const panels = section.querySelectorAll("[data-tab-panel]")
 
@@ -32,5 +34,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       })
     })
+
+    section.dataset.productTabsInitialized = "true"
   })
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initProductTabs(document)
+})
+
+document.addEventListener("shopify:section:load", (event) => {
+  initProductTabs(event.target)
 })
