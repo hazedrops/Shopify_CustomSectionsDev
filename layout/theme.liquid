@@ -5,11 +5,11 @@
     {% render 'css-variables' %}
 
     {% comment %} 
-                  Font preloading: 
-                  1. Preconnect to font CDN for faster connection 
-                  2. Preload only the critical font variant (base weight) 
-                  3. Additional variants load on-demand via @font-face 
-            {% endcomment %}
+                              Font preloading: 
+                              1. Preconnect to font CDN for faster connection 
+                              2. Preload only the critical font variant (base weight) 
+                              3. Additional variants load on-demand via @font-face 
+                    {% endcomment %}
     {% unless settings.type_primary_font.system? %}
     <link
         rel="preconnect"
@@ -21,7 +21,8 @@
   {% endunless %}
 
     {% # Load and preload the critical CSS %}
-  {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
+    {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
+  {{ 'utilities.css' | asset_url | stylesheet_tag }}
 
     {% # Social, title, etc. %}
     {% render 'meta-tags' %}
