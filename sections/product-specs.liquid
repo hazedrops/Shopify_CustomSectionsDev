@@ -10,12 +10,17 @@
 
   if has_product
     for block in section.blocks
-      assign spec_label = block.settins.label | strip
       assign metafield_namespace = block.settings.metafield_namespace | strip
       assign metafield_key = block.settings.metafield_key | strip
+      assign metafield_group = blank
+      assign metafield_value = blank
 
       if metafield_namespace != blank and metafield_key != blank
-        assign metafield_value = product.metafields[metafield_namespace][metafield_key]
+        assign metafield_group = product.metafields[metafield_namespace]
+
+        if metafield_group != blank
+          assign metafield_value = metafield_group[metafield_key]
+        endif
 
         if metafield_value != blank
           assign specs_count = specs_count | plus: 1
@@ -67,10 +72,15 @@
                 assign spec_label = block.settings.label | strip
                 assign metafield_namespace = block.settings.metafield_namespace | strip
                 assign metafield_key = block.settings.metafield_key | strip
+                assign metafield_group = blank
                 assign metafield_value = blank
 
                 if metafield_namespace != blank and metafield_key != blank
-                  assign metafield_value = product.metafields[metafield_namespace][metafield_key]
+                  assign metafield_group = product.metafields[metafield_namespace]
+
+                  if metafield_group != blank
+                    assign metafield_value = metafield_group[metafield_key]
+                  endif
                 endif
               %}
 
@@ -84,7 +94,11 @@
                     {%- endif -%}
                   </th>
                   <td class="product-specs__value">
-                    {{ metafield_value | metafield_tag }}
+                    {%- if metafield_value.type == 'multi_line_text_field' -%}
+                      {{ metafield_value.value | newline_to_br }}
+                    {% else %}
+                      {{ metafield_value.value | escape }}
+                    {%- endif -%}
                   </td>
                 </tr>
               {%- endif -%}
