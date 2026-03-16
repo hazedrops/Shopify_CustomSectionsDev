@@ -51,6 +51,14 @@
   color: var(--product-specs-heading-color);
   font-weight: 600;
   padding-right: 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+}
+
+.product-specs__icon {
+  flex: 0 0 auto;
+  line-height: 1;
 }
 
 .product-specs__value {

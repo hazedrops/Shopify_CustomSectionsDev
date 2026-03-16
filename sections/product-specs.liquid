@@ -95,6 +95,9 @@
               {%- if metafield_value != blank or manual_value != blank -%}
                 <tr class="product-specs__row" {{ block.shopify_attributes }}>
                   <th scope="row" class="product-specs__label">
+                    {%- if block.settings.icon != blank -%}
+                      <span class="product-specs__icon" aria-hidden="true">{{ block.settings.icon }}</span>
+                    {%- endif -%}
                     {%- if spec_label != blank -%}
                       {{ spec_label | escape }}
                     {% else %}
@@ -187,16 +190,54 @@
         "name": "Specification row",
         "settings": [
           {
+            "type": "select",
+            "id": "icon",
+            "label": "Icon",
+            "default": "",
+            "options": [
+              {
+                "value": "",
+                "label": "None"
+              },
+              {
+                "value": "⚖️",
+                "label": "Weight"
+              },
+              {
+                "value": "📏",
+                "label": "Dimensions"
+              },
+              {
+                "value": "⚡",
+                "label": "Power"
+              }, {
+                "value": "🔌",
+                "label": "Compatibility"
+              }, {
+                "value": "🔊",
+                "label": "Audio"
+              }, {
+                "value": "🎛️",
+                "label": "Controls"
+              }, {
+                "value": "⚠️",
+                "label": "Caution / Handling"
+              }
+            ]
+          },
+          {
             "type": "text",
             "id": "title",
             "label": "Row label",
             "default": "Weight"
-          }, {
+          },
+          {
             "type": "text",
             "id": "metafield_namespace",
             "label": "Metafield namespace",
             "default": "custom"
-          }, {
+          },
+          {
             "type": "text",
             "id": "metafield_key",
             "label": "Metafield key",
