@@ -30,8 +30,8 @@
   endif
 %}
 
-{%- if has_product and specs_count > 0 -%}
-  <section
+{%- if product != blank and specs_count > 0 -%}
+  <div
     class="product-specs section-{{ section.id }}"
     role="region"
     aria-labelledby="ProductSpecs-Heading-{{ section.id }}"
@@ -66,12 +66,20 @@
           <caption class="visually-hidden">
             {{ section.settings.heading | default: 'Product specifications' | escape }}
           </caption>
+          <thead class="visually-hidden">
+            <tr>
+              <th scope="col">Specification</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
           <tbody>
             {%- for block in section.blocks -%}
               {% liquid
-                assign spec_label = block.settings.label | strip
+                assign spec_label = block.settings.title | strip
                 assign metafield_namespace = block.settings.metafield_namespace | strip
                 assign metafield_key = block.settings.metafield_key | strip
+                assign manual_value = block.settings.manual_value | strip
+                assign unit = block.settings.unit | strip
                 assign metafield_group = blank
                 assign metafield_value = blank
 
@@ -84,7 +92,7 @@
                 endif
               %}
 
-              {%- if metafield_value != blank -%}
+              {%- if metafield_value != blank or manual_value != blank -%}
                 <tr class="product-specs__row" {{ block.shopify_attributes }}>
                   <th scope="row" class="product-specs__label">
                     {%- if spec_label != blank -%}
@@ -98,6 +106,8 @@
                       {{ metafield_value.value | newline_to_br }}
                     {% else %}
                       {{ metafield_value.value | escape }}
+                      {%- if unit != blank -%}
+                        {{ unit | escape }}{%- endif -%}
                     {%- endif -%}
                   </td>
                 </tr>
@@ -107,7 +117,7 @@
         </table>
       </div>
     </div>
-  </section>
+  </div>
 {%- endif -%}
 
 {%- schema -%}
@@ -178,7 +188,7 @@
         "settings": [
           {
             "type": "text",
-            "id": "label",
+            "id": "title",
             "label": "Row label",
             "default": "Weight"
           }, {
@@ -191,6 +201,11 @@
             "id": "metafield_key",
             "label": "Metafield key",
             "default": "weight"
+          }, {
+            "type": "text",
+            "id": "unit",
+            "label": "Unit (optional)",
+            "info": "Example: kg, cm, lb, in"
           }
         ]
       }
@@ -202,14 +217,14 @@
           {
             "type": "spec_row",
             "settings": {
-              "label": "Weight",
+              "title": "Weight",
               "metafield_namespace": "custom",
               "metafield_key": "weight"
             }
           }, {
             "type": "spec_row",
             "settings": {
-              "label": "Dimensions",
+              "title": "Dimensions",
               "metafield_namespace": "custom",
               "metafield_key": "dimensions"
             }
@@ -217,14 +232,14 @@
 
             "type": "spec_row",
             "settings": {
-              "label": "Power",
+              "title": "Power",
               "metafield_namespace": "custom",
               "metafield_key": "power"
             }
           }, {
             "type": "spec_row",
             "settings": {
-              "label": "Compatibility",
+              "title": "Compatibility",
               "metafield_namespace": "custom",
               "metafield_key": "compatibility"
             }
