@@ -1,0 +1,292 @@
+{{ 'product-specs.css' | asset_url | stylesheet_tag }}
+
+{% liquid
+  assign has_product = false
+  assign specs_count = 0
+
+  if product != blank
+    assign has_product = true
+  endif
+
+  if has_product
+    for block in section.blocks
+      assign metafield_namespace = block.settings.metafield_namespace | strip
+      assign metafield_key = block.settings.metafield_key | strip
+      assign metafield_group = blank
+      assign metafield_value = blank
+
+      if metafield_namespace != blank and metafield_key != blank
+        assign metafield_group = product.metafields[metafield_namespace]
+
+        if metafield_group != blank
+          assign metafield_value = metafield_group[metafield_key]
+        endif
+
+        if metafield_value != blank
+          assign specs_count = specs_count | plus: 1
+        endif
+      endif
+    endfor
+  endif
+%}
+
+{%- if product != blank and specs_count > 0 -%}
+  <div
+    class="product-specs section-{{ section.id }}"
+    role="region"
+    aria-labelledby="ProductSpecs-Heading-{{ section.id }}"
+    style="
+        --product-specs-background: {{ section.settings.background_color }};
+        --product-specs-heading-color: {{ section.settings.heading_color }};
+        --product-specs-text-color: {{ section.settings.text_color }};
+        --product-specs-border-color: {{ section.settings.border_color }};
+        --product-specs-padding-top: {{ section.settings.padding_top }}px;
+        --product-specs-padding-bottom: {{ section.settings.padding_bottom }}px;
+      ">
+
+    <div class="product-specs__inner page-width">
+      {%- if section.settings.heading != blank -%}
+        <h2 id="ProductSpecs-Heading-{{ section.id }}" class="product-specs__heading">
+          {{ section.settings.heading | escape }}
+        </h2>
+      {% else %}
+        <h2 id="ProductSpecs-Heading-{{ section.id }}" class="product-specs__heading visually-hidden">
+          Product specifications
+        </h2>
+      {%- endif -%}
+
+      {%- if section.settings.intro_text != blank -%}
+        <div class="product-specs__intro rte">
+          {{ section.settings.intro_text }}
+        </div>
+      {%- endif -%}
+
+      <div class="product-specs__table-wrapper">
+        <table class="product-specs__table">
+          <caption class="visually-hidden">
+            {{ section.settings.heading | default: 'Product specifications' | escape }}
+          </caption>
+          <thead class="visually-hidden">
+            <tr>
+              <th scope="col">Specification</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%- for block in section.blocks -%}
+              {% liquid
+                assign spec_label = block.settings.title | strip
+                assign metafield_namespace = block.settings.metafield_namespace | strip
+                assign metafield_key = block.settings.metafield_key | strip
+                assign manual_value = block.settings.manual_value | strip
+                assign unit = block.settings.unit | strip
+                assign metafield_group = blank
+                assign metafield_value = blank
+
+                if metafield_namespace != blank and metafield_key != blank
+                  assign metafield_group = product.metafields[metafield_namespace]
+
+                  if metafield_group != blank
+                    assign metafield_value = metafield_group[metafield_key]
+                  endif
+                endif
+              %}
+
+              {%- if metafield_value != blank or manual_value != blank -%}
+                <tr class="product-specs__row" {{ block.shopify_attributes }}>
+                  <th scope="row" class="product-specs__label">
+                    {%- if block.settings.icon != blank -%}
+                      <span class="product-specs__icon" aria-hidden="true">{{ block.settings.icon }}</span>
+                    {%- endif -%}
+                    {%- if spec_label != blank -%}
+                      {{ spec_label | escape }}
+                    {% else %}
+                      {{ metafield_key | replace: '_', ' ' | capitalize }}
+                    {%- endif -%}
+                  </th>
+                  <td class="product-specs__value">
+                    {%- if metafield_value.type == 'multi_line_text_field' -%}
+                      {{ metafield_value.value | newline_to_br }}
+                    {% else %}
+                      {{ metafield_value.value | escape }}
+                      {%- if unit != blank -%}
+                        {{ unit | escape }}{%- endif -%}
+                    {%- endif -%}
+                  </td>
+                </tr>
+              {%- endif -%}
+            {%- endfor -%}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{%- schema -%}
+  {
+    "name": "Product specs",
+    "tag": "section",
+    "class": "section",
+    "enabled_on": {
+      "templates": ["product"]
+    },
+    "settings": [
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Specifications"
+      },
+      {
+        "type": "richtext",
+        "id": "intro_text",
+        "label": "Intro text"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "heading_color",
+        "label": "Heading color",
+        "default": "#111111"
+      }, {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text color",
+        "default": "#333333"
+      }, {
+        "type": "color",
+        "id": "border_color",
+        "label": "Border color",
+        "default": "#e5e5e5"
+      }, {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 120,
+        "step": 4,
+        "unit": "px",
+        "label": "Padding top",
+        "default": 40
+      }, {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 120,
+        "step": 4,
+        "unit": "px",
+        "label": "Padding bottom",
+        "default": 40
+      }
+    ],
+    "blocks": [
+      {
+        "type": "spec_row",
+        "name": "Specification row",
+        "settings": [
+          {
+            "type": "select",
+            "id": "icon",
+            "label": "Icon",
+            "default": "",
+            "options": [
+              {
+                "value": "",
+                "label": "None"
+              },
+              {
+                "value": "⚖️",
+                "label": "Weight"
+              },
+              {
+                "value": "📏",
+                "label": "Dimensions"
+              },
+              {
+                "value": "⚡",
+                "label": "Power"
+              }, {
+                "value": "🔌",
+                "label": "Compatibility"
+              }, {
+                "value": "🔊",
+                "label": "Audio"
+              }, {
+                "value": "🎛️",
+                "label": "Controls"
+              }, {
+                "value": "⚠️",
+                "label": "Caution / Handling"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Row label",
+            "default": "Weight"
+          },
+          {
+            "type": "text",
+            "id": "metafield_namespace",
+            "label": "Metafield namespace",
+            "default": "custom"
+          },
+          {
+            "type": "text",
+            "id": "metafield_key",
+            "label": "Metafield key",
+            "default": "weight"
+          }, {
+            "type": "text",
+            "id": "unit",
+            "label": "Unit (optional)",
+            "info": "Example: kg, cm, lb, in"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Product specs",
+        "blocks": [
+          {
+            "type": "spec_row",
+            "settings": {
+              "title": "Weight",
+              "metafield_namespace": "custom",
+              "metafield_key": "weight"
+            }
+          }, {
+            "type": "spec_row",
+            "settings": {
+              "title": "Dimensions",
+              "metafield_namespace": "custom",
+              "metafield_key": "dimensions"
+            }
+          }, {
+
+            "type": "spec_row",
+            "settings": {
+              "title": "Power",
+              "metafield_namespace": "custom",
+              "metafield_key": "power"
+            }
+          }, {
+            "type": "spec_row",
+            "settings": {
+              "title": "Compatibility",
+              "metafield_namespace": "custom",
+              "metafield_key": "compatibility"
+            }
+          }
+        ]
+      }
+    ]
+  }
+{%- endschema -%}
