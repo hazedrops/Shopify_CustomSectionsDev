@@ -1,52 +1,61 @@
-{% comment %}
-  This section is used in the product template to render product page with
-  media, content, and add-to-cart form.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/product
+{% comment %} 
+          This section is used in the product template to render product page with
+          media, content, and add-to-cart form.
+          
+          https://shopify.dev/docs/storefronts/themes/architecture/templates/product 
 {% endcomment %}
+{{ 'product-variant-picker.css' | asset_url | stylesheet_tag }}
 
-<div class="product-images">
-  {% for image in product.images %}
-    {% render 'image', class: 'product-image', image: image %}
-  {% endfor %}
+{% assign current_variant = product.selected_or_first_available_variant %}
+
+<div class="product section-{{ section.id }}" data-product-root>
+  <div class="product-images">
+    {% for image in product.images %}
+      {% render 'image'
+        , class: 'product-image'
+        , image: image %}
+    {% endfor %}
+  </div>
+
+  <div class="product-info">
+    <h1>{{ product.title }}</h1>
+    <p>{{ product.price | money }}</p>
+    <p>{{ product.description }}</p>
+  </div>
+
+  <div class="product-form">
+    {% form 'product'
+      , product %}
+
+      {%- render 'product-variant-picker'
+        , product: product
+        , section: section -%}
+
+      <input
+        type="hidden"
+        name="id"
+        value="{{ current_variant.id }}">
+
+      <input
+        type="number"
+        name="quantity"
+        min="1"
+        value="1">
+
+      <input type="submit" value="Add to cart">
+      {{ form | payment_button }}
+    {% endform %}
+  </div>
 </div>
 
-<div class="product-info">
-  <h1>{{ product.title }}</h1>
-  <p>{{ product.price | money }}</p>
-  <p>{{ product.description }}</p>
-</div>
-
-<div class="product-form">
-  {% form 'product', product %}
-    {% assign current_variant = product.selected_or_first_available_variant %}
-
-    <select name="id">
-      {% for variant in product.variants %}
-        <option
-          value="{{ variant.id }}"
-          {% if variant == current_variant %}
-            selected="selected"
-          {% endif %}
-        >
-          {{ variant.title }} - {{ variant.price | money }}
-        </option>
-      {% endfor %}
-    </select>
-
-    <input type="text" name="quantity" min="1" value="1">
-
-    <input type="submit" value="Add to cart">
-    {{ form | payment_button }}
-  {% endform %}
-</div>
+<script src="{{  'product-variant-picker.js' | asset_url }}" defer></script>
 
 {% schema %}
-{
-  "name": "t:general.product",
-  "settings": [],
-  "disabled_on": {
-    "groups": ["header", "footer"]
+  {
+    "name": "t:general.product",
+    "settings": [],
+    "disabled_on": {
+      "groups": ["header", "footer"]
+    }
   }
-}
 {% endschema %}

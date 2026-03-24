@@ -1,0 +1,46 @@
+{% liquid
+  assign current_variant = product.selected_or_first_available_variant
+%}
+
+<div
+  class="variant-picker"
+  data-variant-picker
+  data-variants='{{ product.variants | json | escape }}'
+  data-section-id="{{ section.id }}">
+  {%- for option in product.options_with_values -%}
+    <fieldset class="variant-picker__group">
+      <legend class="variant-picker__label">{{ option.name }}</legend>
+
+      <div class="variant-picker__options">
+        {%- for value in option.values -%}
+          {% liquid
+            assign is_selected = false
+
+            case option.position
+              when 1
+                if current_variant.option1 == value
+                  assign is_selected = true
+                endif
+              when 2
+                if current_variant.option2 == value
+                  assign is_selected = true
+                endif
+              when 3
+                if current_variant.option3 == value
+                  assign is_selected = true
+                endif
+            endcase
+          %}
+
+          <button
+            type="button"
+            class="variant-picker__option {% if is_selected %} variant-picker__option--selected{% endif %}"
+            data-option-position="{{ option.position }}"
+            data-option-value="{{ value | escape }}">
+            {{ value }}
+          </button>
+        {%- endfor -%}
+      </div>
+    </fieldset>
+  {%- endfor -%}
+</div>
