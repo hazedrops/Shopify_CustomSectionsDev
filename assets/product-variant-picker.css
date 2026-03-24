@@ -45,6 +45,8 @@
 .variant-picker__option--disabled {
   opacity: 0.45;
   cursor: not-allowed;
+  background: #555;
+  color: white;
 }
 
 .variant-picker__option:focus-visible {

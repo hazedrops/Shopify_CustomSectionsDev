@@ -4,10 +4,10 @@ document.addEventListener("DOMContentLoaded", () => {
   pickers.forEach((picker) => {
     const variants = JSON.parse(picker.dataset.variants)
     const form = picker.closest("form")
-    const variantInput = corm.querySelector('input[name="id]')
+    const variantInput = form.querySelector('input[name="id"]')
     const optionButtons = picker.querySelectorAll(".variant-picker__option")
     const addToCartButton = form.querySelector(
-      'input[type="submit"], buttton[type="submit"]',
+      'input[type="submit"], button[type="submit"]',
     )
 
     const selectedOptions = {}
@@ -22,9 +22,17 @@ document.addEventListener("DOMContentLoaded", () => {
         : selectedOptions[optionPosition]
     })
 
+    function setButtonText(button, text) {
+      if (button.tagName === "INPUT") {
+        button.value = text
+      } else {
+        button.textContent = text
+      }
+    }
+
     function getMatchedVariant() {
       return variants.find((variant) => {
-        return [variant.option1, varant.option2, variant.option3].every(
+        return [variant.option1, variant.option2, variant.option3].every(
           (optionValue, index) => {
             const position = index + 1
 
@@ -80,19 +88,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (addToCartButton) {
           if (matchedVariant.available) {
             addToCartButton.disabled = false
-            if (addToCartButton.tagName === "INPUT") {
-              addToCartButton.value = "Add to cart"
-            } else {
-              addToCartButton.textContent = "Add to cart"
-            }
+
+            setButtonText(addToCartButton, "Add to cart")
           } else {
             addToCartButton.disabled = true
 
-            if (addToCartButton.tagName === "INPUT") {
-              addToCartButton.value = "Sold out"
-            } else {
-              addToCartButton.textContent = "Sold out"
-            }
+            setButtonText(addToCartButton, "Sold out")
           }
         }
       } else {
@@ -101,11 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (addToCartButton) {
           addToCartButton.disabled = true
 
-          if (addToCartButton.tagName === "INPUT") {
-            addToCartButton.value = "Unavailable"
-          } else {
-            addToCartButton.textContent = "Unavailable"
-          }
+          setButtonText(addToCartButton, "Unavailable")
         }
       }
 

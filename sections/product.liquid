@@ -6,43 +6,46 @@
 {% endcomment %}
 {{ 'product-variant-picker.css' | asset_url | stylesheet_tag }}
 
-<div class="product-images">
-  {% for image in product.images %}
-    {% render 'image'
-      , class: 'product-image'
-      , image: image %}
-  {% endfor %}
-</div>
+{% assign current_variant = product.selected_or_first_available_variant %}
 
-<div class="product-info">
-  <h1>{{ product.title }}</h1>
-  <p>{{ product.price | money }}</p>
-  <p>{{ product.description }}</p>
-</div>
+<div class="product section-{{ section.id }}" data-product-root>
+  <div class="product-images">
+    {% for image in product.images %}
+      {% render 'image'
+        , class: 'product-image'
+        , image: image %}
+    {% endfor %}
+  </div>
 
-<div class="product-form">
-  {% form 'product'
-    , product %}
-    {% assign current_variant = product.selected_or_first_available_variant %}
+  <div class="product-info">
+    <h1>{{ product.title }}</h1>
+    <p>{{ product.price | money }}</p>
+    <p>{{ product.description }}</p>
+  </div>
 
-    {%- render 'product-variant-picker'
-      , product: product
-      , section: section -%}
+  <div class="product-form">
+    {% form 'product'
+      , product %}
 
-    <input
-      type="hidden"
-      name="id"
-      value="{{ current_variant.id }}">
+      {%- render 'product-variant-picker'
+        , product: product
+        , section: section -%}
 
-    <input
-      type="number"
-      name="quantity"
-      min="1"
-      value="1">
+      <input
+        type="hidden"
+        name="id"
+        value="{{ current_variant.id }}">
 
-    <input type="submit" value="Add to cart">
-    {{ form | payment_button }}
-  {% endform %}
+      <input
+        type="number"
+        name="quantity"
+        min="1"
+        value="1">
+
+      <input type="submit" value="Add to cart">
+      {{ form | payment_button }}
+    {% endform %}
+  </div>
 </div>
 
 <script src="{{  'product-variant-picker.js' | asset_url }}" defer></script>
