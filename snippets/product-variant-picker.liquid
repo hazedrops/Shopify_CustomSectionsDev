@@ -34,9 +34,10 @@
 
           <button
             type="button"
-            class="variant-picker__option {% if is_selected %} variant-picker__option--selected{% endif %}"
+            class="variant-picker__option{% if is_selected %} variant-picker__option--selected{% endif %}"
             data-option-position="{{ option.position }}"
-            data-option-value="{{ value | escape }}">
+            data-option-value="{{ value | escape }}"
+            aria-pressed="{% if is_selected %}true{% else %}false{% endif %}">
             {{ value }}
           </button>
         {%- endfor -%}

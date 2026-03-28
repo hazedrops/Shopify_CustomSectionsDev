@@ -21,8 +21,8 @@
 }
 
 .variant-picker__option {
-  padding: 0.625rem 0.875rem;
-  border: 1px solid #d1d5db;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d0d0d0;  
   background: #ffffff;
   color: #111111;
   font: inherit;
@@ -32,13 +32,12 @@
 }
 
 .variant-picker__option:hover {
-  border-color: #111111;
+  border-color: #222222;
 }
 
 .variant-picker__option--selected {
   border-color: #111111;
-  background: #111111;
-  color: #ffffff;
+  background: #f3f3f3;
 }
 
 .variant-picker__option:disabled,
@@ -50,6 +49,35 @@
 }
 
 .variant-picker__option:focus-visible {
-  outline: 2px solid #111111;
+  outline: 2px solid #222222;
   outline-offset: 2px;
+}
+
+.product-info__price {
+  display: flex;
+  gap: .5em;
+}
+
+.product-price {
+  font-weight: 700;
+}
+
+.product-compare-price {
+  color: #666666;
+  text-decoration: line-through;
+}
+
+.hidden {
+  display: none;
+}
+
+.product-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: opacity 0.15s ease;
+}
+
+.product-image--updating {
+  opacity: 0.35;
 }
