@@ -1,8 +1,8 @@
 {% comment %} 
-          This section is used in the product template to render product page with
-          media, content, and add-to-cart form.
-          
-          https://shopify.dev/docs/storefronts/themes/architecture/templates/product 
+                              This section is used in the product template to render product page with
+                              media, content, and add-to-cart form.
+                              
+                              https://shopify.dev/docs/storefronts/themes/architecture/templates/product 
 {% endcomment %}
 {{ 'product-variant-picker.css' | asset_url | stylesheet_tag }}
 
@@ -10,16 +10,50 @@
 
 <div class="product section-{{ section.id }}" data-product-root>
   <div class="product-images">
-    {% for image in product.images %}
-      {% render 'image'
-        , class: 'product-image'
-        , image: image %}
-    {% endfor %}
+    {%- if current_variant.featured_image -%}
+      <img
+        class='product-image'
+        data-product-image
+        src="{{ current_variant.featured_image | image_url: width: 1200 }}"
+        alt="{{ current_variant.featured_image.alt | escape }}"
+        width="{{ current_variant.featured_image.width }}"
+        height="{{ current_variant.featured_image.height }}"
+        loading="lazy">
+    {% elsif product.featured_image %}
+      <img
+        class="product-image"
+        data-product-image
+        src="{{ product.featured_image | image_url: width: 1200 }}"
+        alt="{{ product.featured_image.alt | escape }}"
+        width="{{ product.featured_image.width }}"
+        height="{{ product.featured_image.height }}"
+        loading="lazy">
+    {%- endif -%}
   </div>
 
   <div class="product-info">
     <h1>{{ product.title }}</h1>
-    <p>{{ product.price | money }}</p>
+
+    <div class="product-info__price">
+      <p class="product-price" data-product-price>
+        {{ current_variant.price | money }}
+      </p>
+
+      <p class="product-compare-price{% unless current_variant.compare_at_price > current_variant.price %} hidden{% endunless %}" data-product-compare-price>
+        {%- if current_variant.compare_at_price > current_variant.price -%}
+          {{ current_variant.compare_at_price | money }}
+        {%- endif -%}
+      </p>
+    </div>
+
+    <p class="product-status" data-product-status>
+      {%- if current_variant.available -%}
+        In stock
+      {% else %}
+        Sold out
+      {%- endif -%}
+    </p>
+
     <p>{{ product.description }}</p>
   </div>
 
@@ -42,7 +76,14 @@
         min="1"
         value="1">
 
-      <input type="submit" value="Add to cart">
+      <input
+        type="submit"
+        value="{% if current_variant.available %}Add to cart{% else %}Sold out{% endif %}"
+        {% unless current_variant.available %}
+        disabled
+        {% endunless %}
+        data-add-to-cart>
+
       {{ form | payment_button }}
     {% endform %}
   </div>
