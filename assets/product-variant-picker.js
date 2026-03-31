@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const priceEl = productRoot.querySelector("[data-product-price]")
     const comparePriceEl = productRoot.querySelector("[data-product-compare-price]")
     const statusEl = productRoot.querySelector("[data-product-status]")
-    const imageEl = productRoot.querySelector("[data-product-image]")
     const addToCartButton = productRoot.querySelector("[data-add-to-cart]")
 
     const selectedOptions = {}
@@ -177,7 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if(!variant) {
         addToCartButton.disabled = true
-        addToCartButton.value = "Unavailable"
+        addToCartButton.textContent = "Unavailable"
         statusEl.textContent = "Unavailable"
 
         return
@@ -185,35 +184,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if(variant.available) {
         addToCartButton.disabled = false
-        addToCartButton.value = "Add to cart"
+        addToCartButton.textContent = "Add to cart"
         statusEl.textContent = "In stock"
       } else {
         addToCartButton.disabled = true
-        addToCartButton.value = "Sold out"
+        addToCartButton.textContent = "Sold out"
         statusEl.textContent = "Sold out"
       }
     }
 
     function updateImage(variant) {
-      if(!imageEl || !variant) return
+      if(!variant || !productRoot?.updateGalleryImage) return
 
-      const imageData = variant.featured_image || variant.featured_media
+      const imageData = getVariantImageData(variant)
 
       if(!imageData) return
 
-      const newImageSrc = imageData.src
-      const newImageAlt = imageData.alt || ""
-
-      if(!newImageSrc) return
-      if(imageEl.getAttribute("src") === newImageSrc) return
-
-      imageEl.classList.add("product-image--updating")
-
-      setTimeout(() => {
-        imageEl.setAttribute("src", newImageSrc)
-        imageEl.setAttribute("alt", newImageAlt)
-        imageEl.classList.remove("product-image--updating")
-      }, 150)
+      productRoot.updateGalleryImage(imageData)
     }
 
     function updateURL(variant) {
@@ -229,5 +216,35 @@ document.addEventListener("DOMContentLoaded", () => {
         style: "currency", currency: "USD",
       }).format(cents / 100)
     }   
+
+    function getVariantImageData(variant) {
+      if(!variant) return
+
+      if(variant.featured_media?.preview_image?.src) {
+        return {
+          src: variant.featured_media.preview_image.src,
+          alt: variant.featured_media.alt || "",
+          mediaId: variant.featured_media.id,
+        }
+      }
+
+      if(variant.featured_media?.src) {
+        return{
+          src: variant.featured_media.src,
+          alt: variant.featured_media.alt || "",
+          mediaId: variant.featured_media.id,
+        }
+      }
+
+      if(variant.featured_image?.src) {
+        return {
+          src: variant.featured_image.src,
+          alt: variant.featured_image.alt || "",
+          mediaId: variant.featured_image.id || "",
+        }
+      }
+
+      return null         
+    }
   })
 })
