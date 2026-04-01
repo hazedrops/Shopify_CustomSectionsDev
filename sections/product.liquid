@@ -1,8 +1,8 @@
 {% comment %} 
-            This section is used in the product template to render product page with
-            media, content, and add-to-cart form.
-            
-            https://shopify.dev/docs/storefronts/themes/architecture/templates/product 
+                                          This section is used in the product template to render product page with
+                                          media, content, and add-to-cart form.
+                                          
+                                          https://shopify.dev/docs/storefronts/themes/architecture/templates/product 
 {% endcomment %}
 {{ 'product-variant-picker.css' | asset_url | stylesheet_tag }}
 
@@ -93,6 +93,11 @@
             , product: product
             , section: section -%}
 
+          <input
+            type="hidden"
+            name="id"
+            value="{{ current_variant.id }}">
+
           <div class="product-page__quantity">
             <label for="Quantity-{{ section.id }}" class="product-page__quantity-label">
               Quantity
@@ -110,7 +115,7 @@
             class="product-page__add-to-cart"
             type="submit"
             data-add-to-cart
-            {%- unless current_variant.available -%}
+            {% unless current_variant.available %}
             disabled{%- endunless -%}>
             {% if current_variant.available %}
               Add to cart

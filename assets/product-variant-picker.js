@@ -174,9 +174,17 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateAvailability(variant) {
       if(!addToCartButton || !statusEl) return
 
+      function setAddToCartText(text) {
+        if(addToCartButton.tagName === "INPUT") {
+          addToCartButton.value = text
+        } else {
+          addToCartButton.textContent = text
+        }
+      }
+
       if(!variant) {
         addToCartButton.disabled = true
-        addToCartButton.textContent = "Unavailable"
+        setAddToCartText("Unavailable")
         statusEl.textContent = "Unavailable"
 
         return
@@ -184,11 +192,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if(variant.available) {
         addToCartButton.disabled = false
-        addToCartButton.textContent = "Add to cart"
+        setAddToCartText("Add to cart")
         statusEl.textContent = "In stock"
       } else {
         addToCartButton.disabled = true
-        addToCartButton.textContent = "Sold out"
+        setAddToCartText("Sold out")
         statusEl.textContent = "Sold out"
       }
     }
