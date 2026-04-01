@@ -1,94 +1,135 @@
 {% comment %} 
-                              This section is used in the product template to render product page with
-                              media, content, and add-to-cart form.
-                              
-                              https://shopify.dev/docs/storefronts/themes/architecture/templates/product 
+                                          This section is used in the product template to render product page with
+                                          media, content, and add-to-cart form.
+                                          
+                                          https://shopify.dev/docs/storefronts/themes/architecture/templates/product 
 {% endcomment %}
 {{ 'product-variant-picker.css' | asset_url | stylesheet_tag }}
 
-{% assign current_variant = product.selected_or_first_available_variant %}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign current_media = current_variant.featured_media | default: product.featured_media -%}
 
 <div class="product section-{{ section.id }}" data-product-root>
-  <div class="product-images">
-    {%- if current_variant.featured_image -%}
-      <img
-        class='product-image'
-        data-product-image
-        src="{{ current_variant.featured_image | image_url: width: 1200 }}"
-        alt="{{ current_variant.featured_image.alt | escape }}"
-        width="{{ current_variant.featured_image.width }}"
-        height="{{ current_variant.featured_image.height }}"
-        loading="lazy">
-    {% elsif product.featured_image %}
-      <img
-        class="product-image"
-        data-product-image
-        src="{{ product.featured_image | image_url: width: 1200 }}"
-        alt="{{ product.featured_image.alt | escape }}"
-        width="{{ product.featured_image.width }}"
-        height="{{ product.featured_image.height }}"
-        loading="lazy">
-    {%- endif -%}
-  </div>
+  <div class="product-page__layout">
+    <div class="product-page__media">
+      <div
+        class="product-gallery"
+        data-product-gallery
+        role="region"
+        aria-label="Product media gallery">
+        <div class="product-gallery__main">
+          {%- if current_media -%}
+            <img
+              class="product-gallery__main-image"
+              data-product-image
+              src="{{ current_media.preview_image | image_url: width: 1200 }}"
+              alt="{{ current_media.alt | default: product.title | escape }}"
+              width="{{ current_media.preview_image.width }}"
+              height="{{ current_media.preview_image.height }}"
+              loading="eager">
+          {%- endif -%}
+        </div>
 
-  <div class="product-info">
-    <h1>{{ product.title }}</h1>
-
-    <div class="product-info__price">
-      <p class="product-price" data-product-price>
-        {{ current_variant.price | money }}
-      </p>
-
-      <p class="product-compare-price{% unless current_variant.compare_at_price > current_variant.price %} hidden{% endunless %}" data-product-compare-price>
-        {%- if current_variant.compare_at_price > current_variant.price -%}
-          {{ current_variant.compare_at_price | money }}
+        {%- if product.media.size > 1 -%}
+          <div class="product-gallery__thumbnails" aria-lable="Product thumbnails">
+            {%- for media in product.media -%}
+              {%- assign thumbnail_image = media.preview_image -%}
+              <button
+                class="product-gallery__thumbnail{% if current_media and media.id == current_media.id %} product-gallery__thumbnail--active{% endif %}"
+                type="button"
+                aria-label="Show product image {{ forloop.index }}"
+                aria-current="{% if current_media and media.id == current_media.id %}true{% else %}false{% endif %}"
+                data-product-thumbnail
+                data-media-id="{{ media.id }}"
+                data-media-src="{{ thumbnail_image | image_url: width: 1200 }}"
+                data-media-alt="{{ media.alt | default: product.title | escape }}">
+                <img
+                  src="{{ thumbnail_image | image_url: width: 160 }}"
+                  alt="{{ media.alt | default: product.title | escape }}"
+                  width="{{ thumbnail_image.width }}"
+                  height="{{ thumbnail_image.height }}"
+                  loading="lazy">
+              </button>
+            {%- endfor -%}
+          </div>
         {%- endif -%}
-      </p>
+      </div>
     </div>
 
-    <p class="product-status" data-product-status>
-      {%- if current_variant.available -%}
-        In stock
-      {% else %}
-        Sold out
-      {%- endif -%}
-    </p>
+    <div class="product-info">
+      <div class="product-page__header">
+        <h1 class="product-page__title">{{ product.title }}</h1>
 
-    <p>{{ product.description }}</p>
-  </div>
+        <div class="product-page__pricing">
+          <p class="product-page__price" data-product-price>
+            {{ current_variant.price | money }}
+          </p>
 
-  <div class="product-form">
-    {% form 'product'
-      , product %}
+          <p class="product-page__compare-price{% unless current_variant.compare_at_price > current_variant.price %} hidden{% endunless %}" data-product-compare-price>
+            {%- if current_variant.compare_at_price > current_variant.price -%}
+              {{ current_variant.compare_at_price | money }}
+            {%- endif -%}
+          </p>
+        </div>
 
-      {%- render 'product-variant-picker'
-        , product: product
-        , section: section -%}
+        <p class="product-page__status" data-product-status>
+          {%- if current_variant.available -%}
+            In stock
+          {% else %}
+            Sold out
+          {%- endif -%}
+        </p>
+      </div>
 
-      <input
-        type="hidden"
-        name="id"
-        value="{{ current_variant.id }}">
+      <div class="product-page__description rte">
+        {{ product.description }}
+      </div>
 
-      <input
-        type="number"
-        name="quantity"
-        min="1"
-        value="1">
+      <div class="product-page__form">
+        {% form 'product'
+          , product %}
 
-      <input
-        type="submit"
-        value="{% if current_variant.available %}Add to cart{% else %}Sold out{% endif %}"
-        {% unless current_variant.available %}
-        disabled
-        {% endunless %}
-        data-add-to-cart>
+          {%- render 'product-variant-picker'
+            , product: product
+            , section: section -%}
 
-      {{ form | payment_button }}
-    {% endform %}
+          <input
+            type="hidden"
+            name="id"
+            value="{{ current_variant.id }}">
+
+          <div class="product-page__quantity">
+            <label for="Quantity-{{ section.id }}" class="product-page__quantity-label">
+              Quantity
+            </label>
+            <input
+              id="Quantity-{{ section.id }}"
+              class="product-page__quantity-input"
+              type="number"
+              name="quantity"
+              min="1"
+              value="1">
+          </div>
+
+          <button
+            class="product-page__add-to-cart"
+            type="submit"
+            data-add-to-cart
+            {% unless current_variant.available %}
+            disabled{%- endunless -%}>
+            {% if current_variant.available %}
+              Add to cart
+            {% else %}
+              Sold out
+            {% endif %}
+          </button>
+        {% endform %}
+      </div>
+    </div>
   </div>
 </div>
 
+<script src="{{ 'product-gallery.js' | asset_url }}" defer></script>
 <script src="{{  'product-variant-picker.js' | asset_url }}" defer></script>
 
 {% schema %}

@@ -3,13 +3,14 @@
 }
 
 .variant-picker__group {
-  margin: 0 0 1.25rem;
+  /* margin: 0 0 1.25rem;
   padding: 0;
-  border: 0;
+  border: 0; */
+  display: grid;
+  gap: 0.75rem;
 }
 
 .variant-picker__label {
-  margin-bottom: 0.5rem;
   font-size: 0.95rem;
   font-weight: 600;
 }
@@ -17,12 +18,14 @@
 .variant-picker__options {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.625rem;
 }
 
 .variant-picker__option {
+  min-height: 2.75rem;
   padding: 0.75rem 1rem;
-  border: 1px solid #d0d0d0;  
+  border: 0.0625rem solid rgba(0, 0, 0, 0.16);
+  border-radius: 4px;
   background: #ffffff;
   color: #111111;
   font: inherit;
@@ -32,12 +35,13 @@
 }
 
 .variant-picker__option:hover {
-  border-color: #222222;
+  border-color: rgba(0, 0, 0, 0.35);
 }
 
 .variant-picker__option--selected {
-  border-color: #111111;
-  background: #f3f3f3;
+  background: #333;
+  color: #fff;
+  border-color: #333;
 }
 
 .variant-picker__option:disabled,
