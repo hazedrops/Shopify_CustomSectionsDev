@@ -1,10 +1,11 @@
 {% comment %} 
-                                          This section is used in the product template to render product page with
-                                          media, content, and add-to-cart form.
-                                          
-                                          https://shopify.dev/docs/storefronts/themes/architecture/templates/product 
+                                    This section is used in the product template to render product page with
+                                    media, content, and add-to-cart form.
+                                    
+                                    https://shopify.dev/docs/storefronts/themes/architecture/templates/product 
 {% endcomment %}
 {{ 'product-variant-picker.css' | asset_url | stylesheet_tag }}
+{{ 'product-sticky-atc.css' | asset_url | stylesheet_tag }}
 
 {%- assign current_variant = product.selected_or_first_available_variant -%}
 {%- assign current_media = current_variant.featured_media | default: product.featured_media -%}
@@ -31,7 +32,7 @@
         </div>
 
         {%- if product.media.size > 1 -%}
-          <div class="product-gallery__thumbnails" aria-lable="Product thumbnails">
+          <div class="product-gallery__thumbnails" aria-label="Product thumbnails">
             {%- for media in product.media -%}
               {%- assign thumbnail_image = media.preview_image -%}
               <button
@@ -56,7 +57,7 @@
       </div>
     </div>
 
-    <div class="product-info">
+    <div class="product__info">
       <div class="product-page__header">
         <h1 class="product-page__title">{{ product.title }}</h1>
 
@@ -98,32 +99,105 @@
             name="id"
             value="{{ current_variant.id }}">
 
-          <div class="product-page__quantity">
-            <label for="Quantity-{{ section.id }}" class="product-page__quantity-label">
-              Quantity
-            </label>
-            <input
-              id="Quantity-{{ section.id }}"
-              class="product-page__quantity-input"
-              type="number"
-              name="quantity"
-              min="1"
-              value="1">
+          <div class="product-page__purchase-actions" data-main-product-area>
+            <div class="product-page__quantity">
+              <label for="Quantity-{{ section.id }}" class="product-page__quantity-label">
+                Quantity
+              </label>
+              <input
+                id="Quantity-{{ section.id }}"
+                class="product-page__quantity-input"
+                type="number"
+                name="quantity"
+                min="1"
+                value="1">
+            </div>
+
+            <button
+              class="product-page__add-to-cart"
+              type="submit"
+              data-add-to-cart
+              {% unless current_variant.available %}
+              disabled{%- endunless -%}>
+              {% if current_variant.available %}
+                Add to cart
+              {% else %}
+                Sold out
+              {% endif %}
+            </button>
+          </div>
+        {% endform %}
+      </div>
+    </div>
+
+    <div
+      class="product-sticky-atc"
+      data-sticky-atc
+      hidden>
+      <div class="product-sticky-atc__inner">
+        <div class="product-sticky-atc__media">
+          <img
+            src="{{ current_media.preview_image | image_url: width: 120 }}"
+            alt="{{ product.title }}"
+            width="{{ current_media.preview_image.width }}"
+            height="{{ current_media.preview_image.height }}"
+            class="product-sticky-atc__image"
+            data-sticky-atc-image
+            loading="lazy">
+        </div>
+
+        <div class="product-sticky-atc__info">
+          <p class="product-sticky-atc__title">{{ product.title }}</p>
+
+          <p class="product-sticky-atc__variant" data-sticky-atc-variant>
+            {{ product.selected_or_first_available_variant.title }}
+          </p>
+
+          <div class="product-sticky-atc__price-wrap">
+            <span class="product-sticky-atc__price" data-sticky-atc-price>
+              {{ product.selected_or_first_available_variant.price | money }}
+            </span>
+
+            {%- if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price -%}
+              <s class="product-sticky-atc__compare-price" data-sticky-atc-compare-price>
+                {{ product.selected_or_first_available_variant.compare_at_price | money }}
+              </s>
+            {% else %}
+              <s
+                class="product-sticky-atc__compare-price"
+                data-sticky-atc-compare-price
+                hidden></s>
+            {%- endif -%}
           </div>
 
+          <p class="product-sticky-atc__status" data-sticky-atc-status>
+            {%- if product.selected_or_first_available_variant.available -%}
+              In stock
+            {% else %}
+              Sold out
+            {%- endif -%}
+          </p>
+        </div>
+
+        <div class="product-sticky-atc__actions">
           <button
-            class="product-page__add-to-cart"
-            type="submit"
-            data-add-to-cart
-            {% unless current_variant.available %}
-            disabled{%- endunless -%}>
-            {% if current_variant.available %}
+            type="button"
+            class="product-sticky-atc__button"
+            data-sticky-atc-submit>
+            {%- if product.selected_or_first_available_variant.available -%}
               Add to cart
             {% else %}
               Sold out
-            {% endif %}
+            {%- endif -%}
           </button>
-        {% endform %}
+
+          <button
+            type="button"
+            class="product-sticky-atc__back"
+            data-sticky-atc-back>
+            Change options
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -131,6 +205,7 @@
 
 <script src="{{ 'product-gallery.js' | asset_url }}" defer></script>
 <script src="{{  'product-variant-picker.js' | asset_url }}" defer></script>
+<script src="{{ 'product-sticky-atc.js' | asset_url }}" defer></script>
 
 {% schema %}
   {
