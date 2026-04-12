@@ -139,6 +139,15 @@ document.addEventListener("DOMContentLoaded", () => {
       updateAvailability(variant)
       updateImage(variant)
       updateURL(variant)
+
+      productRoot.dispatchEvent(
+        new CustomEvent("variant:change", {
+          bubbles: true,
+          detail: {
+            variant,
+          },
+        }),
+      )
     }
 
     function updateVariantInput(variant) {
