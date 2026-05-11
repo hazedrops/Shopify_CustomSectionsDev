@@ -193,6 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if(!variant) {
         addToCartButton.disabled = true
+        addToCartButton.dataset.variantUnavailable = "true"
         setAddToCartText("Unavailable")
         statusEl.textContent = "Unavailable"
 
@@ -201,10 +202,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if(variant.available) {
         addToCartButton.disabled = false
+        addToCartButton.dataset.variantUnavailable = "false"
         setAddToCartText("Add to cart")
         statusEl.textContent = "In stock"
       } else {
         addToCartButton.disabled = true
+        addToCartButton.dataset.variantUnavailable = "true"
         setAddToCartText("Sold out")
         statusEl.textContent = "Sold out"
       }
