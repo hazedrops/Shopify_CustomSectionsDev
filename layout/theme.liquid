@@ -23,18 +23,22 @@
     {% # Load and preload the critical CSS %}
     {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
     {{ 'utilities.css' | asset_url | stylesheet_tag }}
-  {{ 'product-page.css' | asset_url | stylesheet_tag }}
+    {{ 'product-page.css' | asset_url | stylesheet_tag }}
+  {{ 'cart-drawer.css' | asset_url | stylesheet_tag }}
 
     {% # Social, title, etc. %}
     {% render 'meta-tags' %}
 
     {{ content_for_header }}
+    <script src="{{ 'cart-drawer.js' | asset_url }}" defer></script>
   </head>
 
   <body>
     {% sections 'header-group' %}
 
     {{ content_for_layout }}
+
+    {% render 'cart-drawer' %}
 
     {% sections 'footer-group' %}
   </body>
